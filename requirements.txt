@@ -1,0 +1,13 @@
+streamlit>=1.20.0
+django>=4.2.0
+pandas>=1.5.0
+numpy>=1.23.0
+scipy>=1.10.0
+plotly>=5.13.0
+pyomo>=6.6
+gymnasium>=0.29
+pulp>=2.7
+pymysql
+cryptography
+pymoo
+streamlit-option-menu

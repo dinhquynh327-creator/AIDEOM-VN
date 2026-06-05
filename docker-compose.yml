@@ -1,45 +1,16 @@
 services:
-  db:
-    image: mysql:8.0
-    environment:
-      MYSQL_DATABASE: ${MYSQL_DATABASE:-aideom}
-      MYSQL_USER: ${MYSQL_USER:-aideom}
-      MYSQL_PASSWORD: ${MYSQL_PASSWORD:-aideom_password}
-      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-root_password}
-    ports:
-      - "3307:3306"
+  django-app:
+    build: .
+    container_name: mds_django_app
+    # Mount thư mục hiện tại vào /app trong container để sửa code trên VSCode thì cập nhật luôn
     volumes:
-      - mysql_data:/var/lib/mysql
-    healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p${MYSQL_ROOT_PASSWORD:-root_password}"]
-      interval: 5s
-      timeout: 5s
-      retries: 20
-
-  backend:
-    build: ./backend
-    env_file: .env
-    command: sh -c "python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
+      - .:/app
+    # Cổng cho Streamlit
     ports:
-      - "8001:8000"
-    depends_on:
-      db:
-        condition: service_healthy
-    volumes:
-      - ./backend:/app
-
-  frontend:
-    build: ./frontend
-    environment:
-      VITE_API_BASE_URL: ${VITE_API_BASE_URL:-http://localhost:8001/api}
-    command: npm run dev -- --host 0.0.0.0
-    ports:
-      - "5173:5173"
-    depends_on:
-      - backend
-    volumes:
-      - ./frontend:/app
-      - /app/node_modules
-
-volumes:
-  mysql_data:
+      - "8501:8501"
+    # Lệnh mặc định khi chạy docker-compose up
+    command: streamlit run app.py --server.port 8501 --server.address 0.0.0.0
+    # Giữ container chạy kể cả khi lệnh mặc định lỗi hoặc để có thể vào terminal
+    tty: true
+    stdin_open: true
+    restart: unless-stopped

@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AIDEOM-VN </title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+        
+        :root {
+            --bg-base: #F3F4F6;
+            --surface: #FFFFFF;
+            --border: #E5E7EB;
+            --text-main: #111827;
+            --text-muted: #6B7280;
+            --primary: #2563EB;
+            --primary-hover: #1D4ED8;
+            --radius: 16px;
+            --sidebar-width: 280px;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', system-ui, sans-serif; background: var(--bg-base); color: var(--text-main); min-height: 100vh; }
+        aside { width: var(--sidebar-width); background: var(--surface); border-right: 1px solid var(--border); padding: 24px 16px; position: fixed; top:0; bottom:0; overflow-y:auto; }
+        aside h2 { font-size: 1.25rem; font-weight: 800; color: var(--text-main); margin-bottom: 4px; padding-left: 12px; display:flex; align-items:center; gap:8px;}
+        aside p { padding-left: 12px; color: var(--text-muted); font-size: 0.8rem; margin-bottom: 24px; font-weight: 500; }
+        aside a { display: block; padding: 10px 16px; margin-bottom: 4px; border-radius: 10px; color: var(--text-muted); text-decoration: none; font-size: 0.95rem; font-weight: 500; transition: 0.2s;}
+        aside a:hover { background: #F3F4F6; color: var(--text-main); }
+        aside a.active { background: #EFF6FF; color: var(--primary); font-weight: 600; }
+        
+        main { margin-left: var(--sidebar-width); padding: 40px; max-width: 1400px; }
+        .hero { margin-bottom: 32px; }
+        .hero h1 { font-size: 2.25rem; font-weight: 800; color: var(--text-main); margin-bottom: 8px; letter-spacing: -0.02em; }
+        .hero p { color: var(--text-muted); font-size: 1.1rem; }
+        
+        .glass-panel { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 32px; margin-bottom: 32px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05), 0 2px 4px -1px rgba(0,0,0,0.03); }
+        
+        form { display: flex; flex-wrap: wrap; gap: 20px; align-items: flex-end; }
+        form > div { display: flex; flex-direction: column; gap: 8px; }
+        form label { font-size: 0.875rem; font-weight: 600; color: var(--text-main); }
+        form input, form select { padding: 12px 16px; border: 1px solid var(--border); border-radius: 10px; font-size: 0.95rem; color: var(--text-main); background: #F9FAFB; transition: border-color 0.2s; outline:none; min-width: 180px; }
+        form input:focus, form select:focus { border-color: var(--primary); background: #FFF; box-shadow: 0 0 0 3px rgba(37,99,235,0.1); }
+        button[type="submit"] { padding: 12px 28px; background: var(--primary); color: white; font-weight: 600; font-size: 0.95rem; border: none; border-radius: 10px; cursor: pointer; transition: 0.2s; box-shadow: 0 4px 6px -1px rgba(37,99,235,0.2); }
+        button[type="submit"]:hover { background: var(--primary-hover); transform: translateY(-1px); box-shadow: 0 6px 8px -1px rgba(37,99,235,0.3); }
+        
+        /* Auto table styling via views.py overrides */
+        .glass-panel table { width: 100%; border-collapse: collapse; margin-top: 16px; margin-bottom: 16px; font-size: 0.9rem; text-align: left; }
+        .glass-panel th, .glass-panel td { padding: 12px 16px; border-bottom: 1px solid var(--border); }
+        .glass-panel th { background: #F9FAFB; font-weight: 600; color: var(--text-muted); text-transform: uppercase; font-size: 0.75rem; letter-spacing: 0.05em; }
+        .glass-panel tbody tr:hover { background: #F9FAFB; }
+        
+        /* Overrides for hardcoded HTML in views.py */
+        .glass-panel h3 { font-size: 1.25rem; font-weight: 700; color: var(--text-main); margin-top: 32px; margin-bottom: 16px; border-bottom: 1px solid var(--border); padding-bottom: 8px; letter-spacing: -0.01em; }
+        .glass-panel h3:first-child { margin-top: 0; }
+        
+        .glass-panel div[style*="background:#ebf8ff"] { background: #EFF6FF !important; border-left-color: var(--primary) !important; border-radius: 0 12px 12px 0; padding: 20px !important; color: #1E3A8A !important; box-shadow: none !important; font-size: 1.05rem; }
+        .glass-panel div[style*="background:#f0fff4"] { background: #F0FDF4 !important; border-left-color: #22C55E !important; color: #166534 !important; padding: 20px !important; border-radius: 0 12px 12px 0; font-size: 1.05rem;}
+        .glass-panel div[style*="background:#fff5f5"] { background: #FEF2F2 !important; border-left-color: #EF4444 !important; color: #991B1B !important; padding: 20px !important; border-radius: 0 12px 12px 0; font-size: 1.05rem;}
+        .glass-panel div[style*="background:#e6fffa"] { background: #F0FDFA !important; border-left-color: #14B8A6 !important; color: #115E59 !important; padding: 20px !important; border-radius: 0 12px 12px 0; font-size: 1.05rem;}
+        
+        .glass-panel div[style*="background:#f7fafc"] { background: #F9FAFB !important; border: 1px solid var(--border) !important; box-shadow: none !important; border-radius: 12px !important; font-size: 1.1rem; }
+        .glass-panel ul { margin-left: 24px; margin-bottom: 16px; color: var(--text-main); }
+        .glass-panel li { margin-bottom: 8px; }
+        pre { font-family: 'JetBrains Mono', monospace; background: #111827; padding: 20px; border-radius: 12px; color: #F3F4F6; font-size: 0.9em; overflow-x: auto; }
+    </style>
+</head>
+<body>
+    <aside>
+        <h2>💎 AIDEOM-VN</h2>
+        <p style="font-size:0.8em; color:var(--text-secondary); margin-bottom:16px; padding-left:2px;">Đinh Thị Diễm Quỳnh</p>
+        {% for bai in bai_list %}
+        <a href="?bai={{ bai.id }}&scenario={{ scenario }}&budget={{ budget }}" class="{% if current_bai == bai.id %}active{% endif %}">{{ bai.label }}</a>
+        {% endfor %}
+    </aside>
+
+    <main>
+        <div class="hero">
+            <h1>{{ title }}</h1>
+            <p>Các mô hình ra quyết định.</p>
+        </div>
+
+        {% if current_bai == 12 %}
+        <div class="glass-panel">
+            <form method="GET">
+                <input type="hidden" name="bai" value="12">
+                <div>
+                    <label>Kịch bản</label>
+                    <select name="scenario">
+                        <option value="S1" {% if scenario == "S1" %}selected{% endif %}>S1. Truyền thống</option>
+                        <option value="S2" {% if scenario == "S2" %}selected{% endif %}>S2. Số hóa nhanh</option>
+                        <option value="S3" {% if scenario == "S3" %}selected{% endif %}>S3. AI dẫn dắt</option>
+                        <option value="S4" {% if scenario == "S4" %}selected{% endif %}>S4. Bao trùm số</option>
+                        <option value="S5" {% if scenario == "S5" %}selected{% endif %}>S5. Tối ưu cân bằng</option>
+                    </select>
+                </div>
+                <div>
+                    <label>Ngân sách (Tỷ VND)</label>
+                    <input type="number" name="budget" value="{{ budget }}" min="10000" max="100000" step="5000">
+                </div>
+                <button type="submit">Cập nhật</button>
+            </form>
+            <p style="margin-top: 15px; color: var(--text-primary);"><strong>Mô tả kịch bản:</strong> {{ description }}</p>
+        </div>
+        
+        <div class="tabs">
+            <button class="tab-btn active" onclick="openTab(event, 'tab1')">💰 Phân bổ & Tổng quan</button>
+            <button class="tab-btn" onclick="openTab(event, 'tab2')">📈 Tăng trưởng GDP</button>
+            <button class="tab-btn" onclick="openTab(event, 'tab3')">💼 Việc làm & Ưu tiên Ngành</button>
+            <button class="tab-btn" onclick="openTab(event, 'tab4')">🛡️ Rủi ro & Vùng miền</button>
+        </div>
+
+        <div id="tab1" class="tab-content active">
+            <div class="metrics">
+                <div class="metric"><h3>Hạ tầng (I)</h3><p>{{ allocation.I|floatformat:0 }}</p></div>
+                <div class="metric"><h3>Số hóa (D)</h3><p>{{ allocation.D|floatformat:0 }}</p></div>
+                <div class="metric"><h3>AI</h3><p>{{ allocation.AI|floatformat:0 }}</p></div>
+                <div class="metric"><h3>Nhân lực (H)</h3><p>{{ allocation.H|floatformat:0 }}</p></div>
+            </div>
+            <div class="glass-panel" style="padding: 10px;">{{ radar_html|safe }}</div>
+        </div>
+        <div id="tab2" class="tab-content">
+            <div class="glass-panel" style="padding: 10px;">{{ gdp_html|safe }}</div>
+        </div>
+        <div id="tab3" class="tab-content">
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                <div class="glass-panel" style="padding: 10px;">{{ labor_html|safe }}</div>
+                <div class="glass-panel" style="padding: 10px;">{{ prio_html|safe }}</div>
+            </div>
+        </div>
+        <div id="tab4" class="tab-content">
+            <div class="metrics">
+                <div class="metric"><h3>Điểm rủi ro</h3><p>{{ risk.risk_score }}</p><h3 style="color:red">{{ risk.level }}</h3></div>
+                <div class="metric"><h3>Tỷ trọng vốn AI</h3><p>{{ risk.ai_budget_share }}%</p></div>
+            </div>
+            <div class="glass-panel" style="padding: 10px;">{{ topsis_html|safe }}</div>
+        </div>
+
+        <script>
+        function openTab(evt, tabId) {
+            var i, tabcontent, tablinks;
+            tabcontent = document.getElementsByClassName("tab-content");
+            for (i = 0; i < tabcontent.length; i++) { tabcontent[i].classList.remove("active"); }
+            tablinks = document.getElementsByClassName("tab-btn");
+            for (i = 0; i < tablinks.length; i++) { tablinks[i].classList.remove("active"); }
+            document.getElementById(tabId).classList.add("active");
+            evt.currentTarget.classList.add("active");
+        }
+        </script>
+        {% endif %}
+
+        {% if current_bai == 1 %}
+        <div class="glass-panel">
+            <form method="GET">
+                <input type="hidden" name="bai" value="1">
+                <div><label>Alpha</label><input type="number" name="alpha" value="{{ alpha }}" step="0.01" min="0.1" max="0.5"></div>
+                <div><label>Beta</label><input type="number" name="beta" value="{{ beta }}" step="0.01" min="0.1" max="0.6"></div>
+                <div><label>Gamma</label><input type="number" name="gamma" value="{{ gamma_val }}" step="0.01" min="0.01" max="0.3"></div>
+                <div><label>Delta</label><input type="number" name="delta" value="{{ delta }}" step="0.01" min="0.01" max="0.2"></div>
+                <div><label>Theta</label><input type="number" name="theta" value="{{ theta }}" step="0.01" min="0.01" max="0.2"></div>
+                <button type="submit">Tính toán</button>
+            </form>
+            {% if mape %}<p style="margin-top:16px; font-size:1.1em; color:var(--accent-2);"><strong>MAPE:</strong> {{ mape }}%</p>{% endif %}
+        </div>
+        {% endif %}
+
+        {% if current_bai == 2 %}
+        <div class="glass-panel">
+            <form method="GET">
+                <input type="hidden" name="bai" value="2">
+                <div><label>Tổng ngân sách</label><input type="number" name="total_budget" value="{{ total_budget_b2 }}" step="5" min="50" max="200"></div>
+                <div><label>Min I</label><input type="number" name="min_I" value="{{ min_I }}" step="1" min="5" max="50"></div>
+                <div><label>Min AI</label><input type="number" name="min_AI" value="{{ min_AI }}" step="1" min="5" max="50"></div>
+                <button type="submit">Giải LP</button>
+            </form>
+            {% if lp_status %}<p style="margin-top:16px;"><strong>Trạng thái:</strong> {{ lp_status }} | <strong>Z* =</strong> {{ lp_z }}</p>{% endif %}
+        </div>
+        {% endif %}
+
+        {% if current_bai == 3 %}
+        <div class="glass-panel">
+            <form method="GET">
+                <input type="hidden" name="bai" value="3">
+                <div><label>w_growth</label><input type="number" name="w_growth" value="{{ w_growth }}" step="0.01" min="0" max="1"></div>
+                <div><label>w_productivity</label><input type="number" name="w_productivity" value="{{ w_productivity }}" step="0.01" min="0" max="1"></div>
+                <div><label>w_spillover</label><input type="number" name="w_spillover" value="{{ w_spillover }}" step="0.01" min="0" max="1"></div>
+                <div><label>w_export</label><input type="number" name="w_export" value="{{ w_export }}" step="0.01" min="0" max="1"></div>
+                <div><label>w_employment</label><input type="number" name="w_employment" value="{{ w_employment }}" step="0.01" min="0" max="1"></div>
+                <div><label>w_ai</label><input type="number" name="w_ai" value="{{ w_ai }}" step="0.01" min="0" max="1"></div>
+                <div><label>w_risk</label><input type="number" name="w_risk" value="{{ w_risk }}" step="0.01" min="0" max="1"></div>
+                <button type="submit">Tính toán</button>
+            </form>
+        </div>
+        {% endif %}
+
+        {% if current_bai == 4 %}
+        <div class="glass-panel">
+            <form method="GET">
+                <input type="hidden" name="bai" value="4">
+                <div><label>Ngân sách</label><input type="number" name="budget" value="{{ budget_b4 }}" step="1000" min="10000" max="100000"></div>
+                <div><label>w_gdp</label><input type="number" name="w_gdp" value="{{ w_gdp }}" step="0.01" min="0" max="1"></div>
+                <div><label>w_equity</label><input type="number" name="w_equity" value="{{ w_equity }}" step="0.01" min="0" max="1"></div>
+                <div><label>w_ai</label><input type="number" name="w_ai" value="{{ w_ai }}" step="0.01" min="0" max="1"></div>
+                <button type="submit">Phân bổ</button>
+            </form>
+        </div>
+        {% endif %}
+
+        {% if current_bai == 5 %}
+        <div class="glass-panel">
+            <form method="GET">
+                <input type="hidden" name="bai" value="5">
+                <div><label>Ngân sách</label><input type="number" name="budget_b5" value="{{ budget_b5 }}" step="5000" min="40000" max="120000"></div>
+                <div><label>w_gdp</label><input type="number" name="w_gdp" value="{{ w_gdp }}" step="0.01" min="0" max="1"></div>
+                <div><label>w_equity</label><input type="number" name="w_equity" value="{{ w_equity }}" step="0.01" min="0" max="1"></div>
+                <div><label>w_ai</label><input type="number" name="w_ai" value="{{ w_ai }}" step="0.01" min="0" max="1"></div>
+                <button type="submit">Giải MIP</button>
+            </form>
+            {% if mip_status %}<p style="margin-top:16px;"><strong>Trạng thái:</strong> {{ mip_status }} | <strong>Dự án chọn:</strong> {{ mip_selected }} | <strong>Chi phí:</strong> {{ mip_cost }}</p>{% endif %}
+        </div>
+        {% endif %}
+
+        {% if current_bai == 6 %}
+        <div class="glass-panel">
+            <form method="GET">
+                <input type="hidden" name="bai" value="6">
+                <div><label>Weight Mode (0: Entropy, 1: Manual)</label><input type="number" name="weight_mode" value="{{ weight_mode }}" min="0" max="1"></div>
+                <div><label>Trọng số thủ công</label><input type="text" name="w_manual" value="{{ w_manual }}" style="width: 200px;"></div>
+                <button type="submit">Tính TOPSIS</button>
+            </form>
+        </div>
+        {% endif %}
+
+        {% if current_bai == 7 %}
+        <div class="glass-panel">
+            <form method="GET">
+                <input type="hidden" name="bai" value="7">
+                <div><label>Số thế hệ</label><input type="number" name="n_gen" value="{{ n_gen }}" step="1" min="10" max="100"></div>
+                <div><label>Kích thước quần thể</label><input type="number" name="pop_size" value="{{ pop_size }}" step="1" min="10" max="100"></div>
+                <button type="submit">Tối ưu</button>
+            </form>
+        </div>
+        {% endif %}
+
+        {% if current_bai == 8 %}
+        <div class="glass-panel">
+            <form method="GET">
+                <input type="hidden" name="bai" value="8">
+                <div><label>Chiết khấu δ</label><input type="number" name="discount" value="{{ discount }}" step="0.01" min="0" max="0.15"></div>
+                <div><label>Tăng vốn/năm</label><input type="number" name="capital_growth" value="{{ capital_growth }}" step="0.01" min="0.01" max="0.20"></div>
+                <div><label>Mục tiêu AI 2035</label><input type="number" name="target_ai" value="{{ target_ai }}" step="0.01" min="0.5" max="1.0"></div>
+                <div><label>Tăng NS/năm</label><input type="number" name="budget_growth" value="{{ budget_growth }}" step="0.01" min="0.01" max="0.20"></div>
+                <button type="submit">Mô phỏng</button>
+            </form>
+        </div>
+        {% endif %}
+
+        {% if current_bai == 9 %}
+        <div class="glass-panel">
+            <form method="GET">
+                <input type="hidden" name="bai" value="9">
+                <div><label>Tốc độ AI</label><input type="number" name="ai_adoption_rate" value="{{ ai_adoption_rate }}" step="0.05" min="0.1" max="0.7"></div>
+                <div><label>Ngân sách đào tạo</label><input type="number" name="retraining_budget" value="{{ retraining_budget }}" step="5" min="5" max="50"></div>
+                <div><label>Tốc độ chuyển đổi</label><input type="number" name="transition_speed" value="{{ transition_speed }}" step="0.1" min="0.1" max="1.0"></div>
+                <div><label>Hệ số việc mới</label><input type="number" name="new_job_multiplier" value="{{ new_job_multiplier }}" step="0.05" min="0.1" max="0.8"></div>
+                <button type="submit">Mô phỏng</button>
+            </form>
+        </div>
+        {% endif %}
+
+        {% if current_bai == 10 %}
+        <div class="glass-panel">
+            <form method="GET">
+                <input type="hidden" name="bai" value="10">
+                <div><label>P(Lạc quan)</label><input type="number" name="p_optimistic" value="{{ p_optimistic }}" step="0.05" min="0" max="1"></div>
+                <div><label>P(Cơ sở)</label><input type="number" name="p_baseline" value="{{ p_baseline }}" step="0.05" min="0" max="1"></div>
+                <div><label>P(Bi quan)</label><input type="number" name="p_pessimistic" value="{{ p_pessimistic }}" step="0.05" min="0" max="1"></div>
+                <div><label>Ngân sách (Nghìn tỷ)</label><input type="number" name="first_stage_cap" value="{{ first_stage_cap }}" step="5" min="30" max="80"></div>
+                <button type="submit">Tối ưu</button>
+            </form>
+        </div>
+        {% endif %}
+
+        {% if current_bai == 11 %}
+        <div class="glass-panel">
+            <form method="GET">
+                <input type="hidden" name="bai" value="11">
+                <div><label>Learning rate α</label><input type="number" name="alpha" value="{{ alpha }}" step="0.01" min="0.01" max="0.5"></div>
+                <div><label>Discount γ</label><input type="number" name="gamma" value="{{ gamma }}" step="0.01" min="0.5" max="0.99"></div>
+                <div><label>Exploration ε</label><input type="number" name="epsilon" value="{{ epsilon }}" step="0.01" min="0.01" max="0.5"></div>
+                <div><label>Số episodes</label><input type="number" name="episodes" value="{{ episodes }}" step="25" min="50" max="500"></div>
+                <button type="submit">Học tăng cường</button>
+            </form>
+        </div>
+        {% endif %}
+
+        {% if current_bai == 12 %}
+        <div class="glass-panel">
+            <form method="GET">
+                <input type="hidden" name="bai" value="12">
+                <div>
+                    <label>Kịch bản:</label>
+                    <select name="scenario">
+                        <option value="S1" {% if scenario == 'S1' %}selected{% endif %}>S1. Truyền thống</option>
+                        <option value="S2" {% if scenario == 'S2' %}selected{% endif %}>S2. Số hóa nhanh</option>
+                        <option value="S3" {% if scenario == 'S3' %}selected{% endif %}>S3. AI dẫn dắt</option>
+                        <option value="S4" {% if scenario == 'S4' %}selected{% endif %}>S4. Bao trùm số</option>
+                        <option value="S5" {% if scenario == 'S5' %}selected{% endif %}>S5. Tối ưu cân bằng</option>
+                    </select>
+                </div>
+                <div><label>Ngân sách tổng (Tỷ VND)</label><input type="number" name="budget" value="{{ budget }}" step="1000" min="10000" max="100000"></div>
+                <button type="submit">Chạy mô phỏng Đồ án</button>
+            </form>
+        </div>
+        {% endif %}
+
+        {% if graph_html %}
+        <div class="glass-panel" style="padding: 10px;">
+            {{ graph_html|safe }}
+        </div>
+        {% endif %}
+
+        {% if extra_info %}
+        <div class="glass-panel">
+            <h3 style="color:var(--accent-2); margin-bottom: 8px;">Thông tin bổ sung</h3>
+            <pre style="white-space:pre-wrap; margin:0;">{{ extra_info }}</pre>
+        </div>
+        {% endif %}
+    </main>
+</body>
+</html>
